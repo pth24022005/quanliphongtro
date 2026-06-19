@@ -1,0 +1,80 @@
+# Chú ý: File này nên được di chuyển ra thư mục gốc của dự án (room_rental_app)
+
+# =================================================================
+# Môi trường & IDE
+# =================================================================
+.vscode/
+.idea/
+.history/
+.DS_Store
+.atom/
+.svn/
+.swiftpm/
+migrate_working_dir/
+
+# --- Thông tin nhạy cảm & Secret (QUAN TRỌNG) ---
+*.env
+*.env.*
+
+# Cấu hình Firebase (tuyệt đối không đưa lên Git)
+**/google-services.json
+**/GoogleService-Info.plist
+**/serviceAccountKey.json
+
+credentials.json
+secrets.json
+*.pem
+*.key
+*.crt
+
+# =================================================================
+# Frontend - Flutter / Dart
+# =================================================================
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+build/
+coverage/
+**/doc/api/
+app.*.symbols
+app.*.map.json
+
+# Android / iOS build artifacts
+**/android/app/debug/
+**/android/app/profile/
+**/android/app/release/
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/Flutter/
+**/ios/Flutter/.last_build_id
+
+# =================================================================
+# Backend - Python
+# =================================================================
+__pycache__/
+*.py[cod]
+*.so
+
+# --- Miscellaneous ---
+*.class
+*.log
+*.swp
+*.bak
+*.tmp
+
+# Virtual environment
+venv/
+.venv/
+env/
+.env/
+ENV/
+
+# =================================================================
+# Node.js (nếu có dùng)
+# =================================================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

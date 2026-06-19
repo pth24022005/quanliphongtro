@@ -1,0 +1,152 @@
+version: "3.8"
+
+services:
+    # ==========================================
+    # 1. NGINX (Cổng vào duy nhất từ bên ngoài)
+    # ==========================================
+    nginx:
+        image: nginx:alpine
+        container_name: nestfinder_nginx
+        ports:
+            - "80:80"
+        volumes:
+            - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+        depends_on:
+            - api_gateway
+        networks:
+            - nestfinder_net
+
+    # ==========================================
+    # 2. API GATEWAY (Bảo vệ JWT & Định tuyến)
+    # ==========================================
+    api_gateway:
+        build:
+            context: ./api-gateway
+            dockerfile: Dockerfile
+        container_name: nestfinder_api_gateway
+        expose:
+            - "5000"
+        networks:
+            - nestfinder_net
+
+    # ==========================================
+    # 3. ROOM SERVICE (Quản lý phòng trọ)
+    # ==========================================
+    room_service:
+        build:
+            context: ./room-service
+            dockerfile: Dockerfile
+        container_name: nestfinder_room_service
+        ports:
+            - "5002:5002"
+        environment:
+            DB_HOST: postgres_db
+            DB_PORT: 5432
+            DB_NAME: nestfinder_core
+            DB_USER: admin
+            DB_PASSWORD: password123
+        depends_on:
+            - postgres_db
+        networks:
+            - nestfinder_net
+
+    # ==========================================
+    # 4. BILLING SERVICE (Quản lý hóa đơn)
+    # ==========================================
+    billing_service:
+        build:
+            context: ./billing-service
+            dockerfile: Dockerfile
+        container_name: nestfinder_billing_service
+        ports:
+            - "5003:5003"
+        environment:
+            DB_HOST: postgres_db
+            DB_PORT: 5432
+            DB_NAME: nestfinder_core
+            DB_USER: admin
+            DB_PASSWORD: password123
+        depends_on:
+            - postgres_db
+        networks:
+            - nestfinder_net
+
+    # ==========================================
+    # 5. NOTIFICATION SERVICE (Gửi thông báo)
+    # ==========================================
+    notification_service:
+        build:
+            context: ./notification-service
+            dockerfile: Dockerfile
+        container_name: nestfinder_notification_service
+        expose:
+            - "5005"
+        environment:
+            DB_HOST: postgres_db
+            DB_PORT: 5432
+            DB_NAME: nestfinder_core
+            DB_USER: admin
+            DB_PASSWORD: password123
+        depends_on:
+            - postgres_db
+        networks:
+            - nestfinder_net
+
+    # ==========================================
+    # 6. USER SERVICE (Xác thực & Quản lý User) <--- MỚI THÊM
+    # ==========================================
+    user_service:
+        build:
+            context: ./user-service
+            dockerfile: Dockerfile
+        container_name: nestfinder_user_service
+        ports:
+            - "8001:8001"
+        environment:
+            DB_HOST: postgres_db
+            DB_PORT: 5432
+            DB_NAME: nestfinder_core
+            DB_USER: admin
+            DB_PASSWORD: password123
+        depends_on:
+            - postgres_db
+        networks:
+            - nestfinder_net
+
+    # ==========================================
+    # 7. DATABASE (PostgreSQL cho các Service)
+    # ==========================================
+    postgres_db:
+        image: postgres:15-alpine
+        container_name: nestfinder_db
+        environment:
+            POSTGRES_USER: admin
+            POSTGRES_PASSWORD: password123
+            POSTGRES_DB: nestfinder_core
+        ports:
+            - "5432:5432"
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+        networks:
+            - nestfinder_net
+
+    # ==========================================
+    # 8. MESSAGE BROKER (RabbitMQ cho Sự kiện ngầm)
+    # ==========================================
+    rabbitmq:
+        image: rabbitmq:3-management-alpine
+        container_name: nestfinder_rabbitmq
+        ports:
+            - "5672:5672"
+            - "15672:15672"
+        networks:
+            - nestfinder_net
+
+# Khai báo mạng ảo dùng chung cho các service
+networks:
+    nestfinder_net:
+        driver: bridge
+
+# Khai báo ổ cứng ảo để Database không mất dữ liệu
+volumes:
+    postgres_data:

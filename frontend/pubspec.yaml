@@ -1,0 +1,45 @@
+name: room_rental_app
+description: NestFinder - Ứng dụng quản lý phòng trọ
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+    sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+    flutter:
+        sdk: flutter
+    cupertino_icons: ^1.0.8
+
+    # State Management & Hooks
+    hooks_riverpod: any
+    flutter_riverpod: ^3.3.2
+    flutter_hooks: any
+
+    # Navigation
+    go_router: any
+
+    # Utilities
+    intl: any
+
+    # Firebase
+    firebase_core: any
+    cloud_firestore: any
+    firebase_auth: ^6.5.3
+    http: ^1.6.0
+    shared_preferences: ^2.5.5
+
+dev_dependencies:
+    flutter_test:
+        sdk: flutter
+
+    # --- BỘ CÔNG CỤ KIỂM THỬ (UNIT TEST & PERFORMANCE) ---
+    integration_test:
+        sdk: flutter
+    fake_cloud_firestore: ^4.1.1
+
+    flutter_lints: ^6.0.0
+
+# The following section is specific to Flutter packages.
+flutter:
+    uses-material-design: true
